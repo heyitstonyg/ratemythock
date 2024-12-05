@@ -53,9 +53,6 @@ export function SoundDescriptors({
     );
   }, [sortedDescriptors, counts, showAll]);
 
-  // Count unused descriptors
-  const unusedCount = DESCRIPTORS.length - Object.keys(counts).length;
-
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-1.5">
@@ -93,14 +90,17 @@ export function SoundDescriptors({
           );
         })}
 
-        {!showAll && unusedCount > 0 && (
-          <button
-            onClick={() => setShowAll(true)}
-            className="px-2 py-1 rounded-md text-[11px] font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all"
-          >
-            +{unusedCount} more
-          </button>
-        )}
+        {!showAll &&
+          sortedDescriptors.some(
+            (descriptor) => !counts[descriptor] || counts[descriptor] === 0
+          ) && (
+            <button
+              onClick={() => setShowAll(true)}
+              className="px-2 py-1 rounded-md text-[11px] font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all"
+            >
+              more options
+            </button>
+          )}
       </div>
 
       {showAll && (

@@ -3,7 +3,8 @@
     "*.css": "postcss"
   },
   "css.validate": false,
-  "postcss.validate": true,
+  "scss.validate": false,
+  "postcss.validate": false,
   "emmet.includeLanguages": {
     "postcss": "css"
   },
@@ -14,5 +15,11 @@
   },
   "editor.quickSuggestions": {
     "strings": true
-  }
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true
+  },
+  "css.customData": [".vscode/tailwind.json"]
 }

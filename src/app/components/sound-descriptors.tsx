@@ -4,16 +4,22 @@ import { useState, useMemo } from "react";
 import { DESCRIPTORS, DescriptorCount } from "../types";
 import { LedIndicator } from "./led-indicator";
 
+interface SoundDescriptorsProps {
+  initialCounts?: DescriptorCount;
+  readOnly?: boolean;
+}
+
 export function SoundDescriptors({
   initialCounts = {},
-}: {
-  initialCounts?: DescriptorCount;
-}) {
+  readOnly = false,
+}: SoundDescriptorsProps) {
   const [userSelections, setUserSelections] = useState<Set<string>>(new Set());
   const [counts, setCounts] = useState<DescriptorCount>(initialCounts);
   const [showAll, setShowAll] = useState(false);
 
   const toggleDescriptor = (descriptor: string) => {
+    if (readOnly) return;
+
     const newSelections = new Set(userSelections);
     const newCounts = { ...counts };
 
@@ -66,14 +72,16 @@ export function SoundDescriptors({
           const percentage = hasCount ? (count / maxCount) * 100 : 0;
 
           return (
-            <button
+            <div
               key={descriptor}
-              onClick={() => toggleDescriptor(descriptor)}
               className={`
                 equipment-panel group relative px-3 py-2
-                transition-all hover:scale-[1.02]
+                ${!readOnly && "hover:scale-[1.02] cursor-pointer"}
                 ${isSelected ? "border-primary/30" : "border-border/50"}
+                transition-all
               `}
+              onClick={() => toggleDescriptor(descriptor)}
+              role={readOnly ? "presentation" : "button"}
             >
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
@@ -124,32 +132,38 @@ export function SoundDescriptors({
                   />
                 ))}
               </div>
-            </button>
+            </div>
           );
         })}
       </div>
 
-      {!showAll &&
-        sortedDescriptors.some(
-          (descriptor) => !counts[descriptor] || counts[descriptor] === 0
-        ) && (
-          <button
-            onClick={() => setShowAll(true)}
-            className="vintage-button w-full flex items-center justify-center gap-2"
-          >
-            <LedIndicator active size="sm" />
-            <span className="technical-label text-[11px]">MORE OPTIONS</span>
-          </button>
-        )}
+      {!readOnly && (
+        <>
+          {!showAll &&
+            sortedDescriptors.some(
+              (descriptor) => !counts[descriptor] || counts[descriptor] === 0
+            ) && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="vintage-button w-full flex items-center justify-center gap-2"
+              >
+                <LedIndicator active size="sm" />
+                <span className="technical-label text-[11px]">
+                  MORE OPTIONS
+                </span>
+              </button>
+            )}
 
-      {showAll && (
-        <button
-          onClick={() => setShowAll(false)}
-          className="vintage-button w-full flex items-center justify-center gap-2"
-        >
-          <LedIndicator active size="sm" />
-          <span className="technical-label text-[11px]">SHOW LESS</span>
-        </button>
+          {showAll && (
+            <button
+              onClick={() => setShowAll(false)}
+              className="vintage-button w-full flex items-center justify-center gap-2"
+            >
+              <LedIndicator active size="sm" />
+              <span className="technical-label text-[11px]">SHOW LESS</span>
+            </button>
+          )}
+        </>
       )}
     </div>
   );

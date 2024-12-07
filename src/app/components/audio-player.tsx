@@ -5,9 +5,10 @@ import { LedIndicator } from "./led-indicator";
 
 interface AudioPlayerProps {
   audioUrl: string;
+  minimal?: boolean;
 }
 
-export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
+export function AudioPlayer({ audioUrl, minimal = false }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState("00:00");
@@ -34,7 +35,7 @@ export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
 
   // Simulate VU meter levels
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && !minimal) {
       const interval = setInterval(() => {
         const newLevels = Array.from({ length: 16 }, () =>
           Math.floor(Math.random() * 8)
@@ -45,7 +46,7 @@ export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
     } else {
       setLevels([]);
     }
-  }, [isPlaying]);
+  }, [isPlaying, minimal]);
 
   const formatTime = (time: number): string => {
     const minutes = Math.floor(time / 60);
@@ -80,6 +81,41 @@ export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
       setIsPlaying(!isPlaying);
     }
   };
+
+  if (minimal) {
+    return (
+      <div className="flex items-center gap-4">
+        <audio ref={audioRef} src={audioUrl} />
+        <button
+          onClick={togglePlayback}
+          className="vintage-button group flex items-center gap-2 min-w-[90px] justify-center"
+        >
+          <LedIndicator active={isPlaying} pulse={isPlaying} size="sm" />
+          <span className="technical-label text-[11px]">
+            {isPlaying ? "STOP" : "PLAY"}
+          </span>
+        </button>
+
+        {/* Simple Progress Bar */}
+        <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary transition-all duration-100"
+            style={{
+              width: `${progress}%`,
+              backgroundImage:
+                "linear-gradient(90deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent)",
+              backgroundSize: "10px 10px",
+            }}
+          />
+        </div>
+
+        {/* Time Display */}
+        <div className="measurement-text text-xs text-muted-foreground">
+          {currentTime}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="equipment-panel p-4 space-y-4">

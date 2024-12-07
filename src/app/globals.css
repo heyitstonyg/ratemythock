@@ -91,9 +91,27 @@
   @apply font-mono tabular-nums;
 }
 
+/* Hero Title */
+.hero-title {
+  @apply measurement-text font-medium tracking-tight;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--foreground) / 0.9) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* Equipment Panel Styling */
 .equipment-panel {
   @apply relative overflow-hidden rounded-lg border bg-equipment-gradient shadow-equipment transition-all duration-300;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--card) / 0.8) 0%,
+    hsl(var(--card)) 100%
+  );
 }
 
 .equipment-panel:hover {
@@ -114,9 +132,47 @@
   @apply opacity-100;
 }
 
+/* Stats Panel */
+.stats-panel {
+  @apply equipment-panel relative overflow-hidden;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--card) / 0.9) 0%,
+    hsl(var(--card) / 0.7) 100%
+  );
+  box-shadow: inset 0 1px 0 0 hsl(var(--background) / 0.1),
+    0 1px 3px 0 hsl(var(--border) / 0.2),
+    0 1px 2px -1px hsl(var(--border) / 0.1);
+}
+
+.stats-panel::before {
+  content: "";
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    hsl(var(--card) / 0.2) 100%
+  );
+}
+
+.stats-panel:hover::before {
+  @apply opacity-100;
+}
+
+.stats-value {
+  @apply measurement-text text-3xl font-medium;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
 /* Technical Grid System */
 .technical-grid {
-  @apply absolute inset-0 bg-technical-grid;
+  @apply absolute inset-0;
+  background-image: linear-gradient(
+      to right,
+      hsl(var(--border) / 0.15) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, hsl(var(--border) / 0.15) 1px, transparent 1px);
   background-size: 24px 24px;
   mask-image: linear-gradient(
     to bottom,
@@ -132,11 +188,11 @@
 
 .measurement-grid::before {
   content: "";
-  @apply absolute left-0 top-0 h-full w-5;
+  @apply absolute -left-6 top-0 h-full w-5;
   background-image: repeating-linear-gradient(
     to bottom,
-    hsl(var(--border) / 0.3) 0px,
-    hsl(var(--border) / 0.3) 1px,
+    hsl(var(--border) / 0.6) 0px,
+    hsl(var(--border) / 0.6) 1px,
     transparent 1px,
     transparent 4px
   );
@@ -144,7 +200,7 @@
 
 /* Vintage Button */
 .vintage-button {
-  @apply relative overflow-hidden rounded-lg px-4 py-2 text-white shadow-equipment transition-all duration-300;
+  @apply relative overflow-hidden rounded-lg text-white shadow-equipment transition-all duration-300;
   background: linear-gradient(
     180deg,
     hsl(var(--primary)) 0%,
@@ -166,37 +222,53 @@
   transform: translateY(1px);
 }
 
-/* Audio Controls */
-.audio-knob {
-  @apply relative w-16 h-16 rounded-full shadow-equipment transition-all duration-300;
+.vintage-button.secondary {
   background: linear-gradient(
-    to bottom,
-    hsl(var(--card)) 0%,
-    hsl(var(--muted)) 100%
+    180deg,
+    hsl(var(--secondary)) 0%,
+    hsl(var(--secondary) / 0.9) 100%
   );
 }
 
-.audio-knob:hover {
-  @apply shadow-equipment-hover;
+.vintage-button.secondary:hover {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--secondary) / 0.9) 0%,
+    hsl(var(--secondary)) 100%
+  );
 }
 
-.audio-knob::after {
+/* Hero Section */
+.hero-gradient {
+  @apply absolute inset-0;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--background) / 0.8) 100%
+  );
+}
+
+/* Measurement Lines */
+.side-measurements {
+  @apply absolute -left-[2px] top-0 h-full w-[2px] flex flex-col justify-between;
+}
+
+.side-measurements::before,
+.side-measurements::after {
   content: "";
-  @apply absolute top-2 left-1/2 w-0.5 h-4 bg-foreground/60;
-  transform: translateX(-50%);
+  @apply absolute left-0 w-[4px] h-[2px] bg-border/60;
 }
 
-/* Level Indicators */
-.level-indicator {
-  @apply w-1 h-4 rounded-sm transition-all duration-300;
+.side-measurements::before {
+  @apply top-0;
 }
 
-.level-active {
-  @apply bg-primary shadow-[0_0_4px_rgba(var(--primary-rgb),0.6)];
+.side-measurements::after {
+  @apply bottom-0;
 }
 
-.level-inactive {
-  @apply bg-border;
+.measurement-tick {
+  @apply absolute left-0 w-[2px] h-[2px] bg-border/60;
 }
 
 /* Animations */

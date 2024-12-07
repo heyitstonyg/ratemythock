@@ -1,8 +1,8 @@
 "use client";
 
 import { KeyboardIcon } from "./components/keyboard-icon";
-import { KeyboardCard } from "./components/keyboard-card";
 import { LedIndicator } from "./components/led-indicator";
+import { KeyboardSection } from "./components/keyboard-section";
 import { Keyboard } from "./types";
 
 const sampleKeyboards: Keyboard[] = [
@@ -47,57 +47,83 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="relative border-b border-[#e5e7eb]/10">
-        <div className="technical-grid" />
+        <div className="technical-grid opacity-30" />
         <div className="mx-auto max-w-4xl px-6 py-24">
           <div className="relative z-10">
-            <div className="equipment-panel p-8">
-              <div className="flex flex-col items-center gap-6">
-                {/* Status Indicators */}
-                <div className="flex items-center gap-4">
-                  <LedIndicator active color="primary" label="SYSTEM" />
-                  <LedIndicator active color="secondary" pulse label="REC" />
+            <div className="equipment-panel p-8 space-y-8">
+              {/* Status Indicators */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <LedIndicator active color="primary" label="LIVE" />
+                  <LedIndicator
+                    active
+                    color="secondary"
+                    pulse
+                    label="COMMUNITY"
+                  />
                 </div>
-
-                {/* Title */}
-                <div className="text-center space-y-4">
-                  <h1 className="measurement-text text-4xl font-medium tracking-tight">
-                    RateMyThock
-                  </h1>
-                  <div className="flex items-center gap-3">
-                    <div className="h-px flex-1 bg-border" />
-                    <span className="technical-label text-muted-foreground">
-                      SOUND ANALYSIS SYSTEM
-                    </span>
-                    <div className="h-px flex-1 bg-border" />
-                  </div>
+                <div className="measurement-text text-xs text-muted-foreground">
+                  ID: {sampleKeyboards.length.toString().padStart(4, "0")}
                 </div>
+              </div>
 
-                {/* Technical Readout */}
-                <div className="w-full max-w-md">
-                  <div className="measurement-grid p-4 bg-card/50 rounded-lg">
-                    <div className="technical-label text-xs text-muted-foreground mb-2">
-                      SYSTEM STATUS
+              {/* Title and Tagline */}
+              <div className="space-y-6 text-center">
+                <h1 className="measurement-text text-5xl font-medium tracking-tight">
+                  Rate My Thock
+                </h1>
+                <div className="flex items-center gap-4 max-w-xl mx-auto">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="technical-label text-lg text-muted-foreground whitespace-nowrap">
+                    KEYBOARD SOUND COMMUNITY
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <p className="technical-label text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                  Find your sound. Share your thock. Build your dream keyboard.
+                </p>
+              </div>
+
+              {/* Community Stats */}
+              <div className="grid grid-cols-3 gap-6">
+                <div className="stats-panel p-6">
+                  <div className="space-y-2">
+                    <div className="technical-label text-xs text-muted-foreground">
+                      KEYBOARDS
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <div className="technical-label text-xs text-muted-foreground">
-                          KEYBOARDS
-                        </div>
-                        <div className="measurement-text">
-                          {sampleKeyboards.length.toString().padStart(2, "0")}
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <div className="technical-label text-xs text-muted-foreground">
-                          STATUS
-                        </div>
-                        <div className="measurement-text text-primary">
-                          ACTIVE
-                        </div>
-                      </div>
+                    <div className="stats-value">
+                      {sampleKeyboards.length.toString().padStart(2, "0")}
                     </div>
                   </div>
                 </div>
+                <div className="stats-panel p-6">
+                  <div className="space-y-2">
+                    <div className="technical-label text-xs text-muted-foreground">
+                      COMMUNITY
+                    </div>
+                    <div className="stats-value text-primary">ACTIVE</div>
+                  </div>
+                </div>
+                <div className="stats-panel p-6">
+                  <div className="space-y-2">
+                    <div className="technical-label text-xs text-muted-foreground">
+                      STATUS
+                    </div>
+                    <div className="stats-value text-secondary">READY</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Call to Action */}
+              <div className="flex items-center justify-center gap-6 pt-4">
+                <button className="vintage-button group flex items-center gap-3 px-10 py-4 text-lg">
+                  <KeyboardIcon className="h-5 w-5" />
+                  <span className="technical-label">Explore Sounds</span>
+                </button>
+                <button className="vintage-button secondary group flex items-center gap-3 px-10 py-4 text-lg">
+                  <LedIndicator active size="sm" />
+                  <span className="technical-label">Share Yours</span>
+                </button>
               </div>
             </div>
           </div>
@@ -105,52 +131,39 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-4xl px-6 py-16">
-        <div className="mb-12">
-          <div className="equipment-panel p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <LedIndicator active size="sm" />
-                <h2 className="technical-label">Featured Keyboards</h2>
-              </div>
-              <div className="measurement-text text-xs text-muted-foreground">
-                {sampleKeyboards.length.toString().padStart(2, "0")} entries
-              </div>
-            </div>
-          </div>
-        </div>
+      <main className="mx-auto max-w-4xl px-6 py-16 space-y-16">
+        {/* Latest Submissions */}
+        <KeyboardSection
+          title="Latest Submissions"
+          description="Recently added to our sound library"
+          keyboards={sampleKeyboards}
+          indicator={{ color: "primary", pulse: true }}
+        />
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {sampleKeyboards.map((keyboard, index) => (
-            <div
-              key={keyboard.id}
-              className="transform transition-all duration-500"
-              style={{
-                animationDelay: `${index * 150}ms`,
-                opacity: 0,
-                animation: "fadeIn 0.5s ease-out forwards",
-              }}
-            >
-              <KeyboardCard keyboard={keyboard} index={index} />
-            </div>
-          ))}
-        </div>
+        {/* Thocky Collection */}
+        <KeyboardSection
+          title="Thocky Collection"
+          description="Deep, satisfying sounds that define thock"
+          keyboards={sampleKeyboards.filter((k) => k.descriptors.Thocky)}
+          indicator={{ color: "secondary" }}
+        />
+
+        {/* Community Favorites */}
+        <KeyboardSection
+          title="Community Favorites"
+          description="Most appreciated by our community"
+          keyboards={sampleKeyboards}
+          indicator={{ color: "primary" }}
+        />
+
+        {/* Premium Builds */}
+        <KeyboardSection
+          title="Premium Builds"
+          description="High-end keyboards with exceptional sound"
+          keyboards={sampleKeyboards}
+          indicator={{ color: "secondary" }}
+        />
       </main>
-
-      {/* Record Button */}
-      <div className="fixed bottom-6 right-6">
-        <button className="vintage-button group flex items-center gap-3">
-          <div className="relative">
-            <KeyboardIcon className="h-4 w-4" />
-            <LedIndicator
-              active={true}
-              size="sm"
-              className="absolute -right-1 -top-1"
-            />
-          </div>
-          <span className="technical-label">Record Sound</span>
-        </button>
-      </div>
     </div>
   );
 }

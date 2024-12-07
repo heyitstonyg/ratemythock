@@ -1,11 +1,19 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { JetBrains_Mono, DM_Sans } from "next/font/google";
 
-const inter = Inter({
+// Load JetBrains Mono for technical text
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
-  variable: "--font-inter",
+});
+
+// Load DM Sans for general text
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -20,16 +28,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`antialiased ${inter.variable}`}>
-      <body className="min-h-screen bg-gradient-to-b from-white to-gray-50/50">
+    <html
+      lang="en"
+      className={`antialiased ${dmSans.variable} ${jetbrainsMono.variable}`}
+    >
+      <body className="min-h-screen bg-background font-sans">
         <div className="relative flex min-h-screen flex-col">
           <div className="flex-1">{children}</div>
-          <footer className="border-t border-gray-100 py-6 md:py-0">
+          <footer className="border-t border-border py-6 md:py-0">
             <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Built for keyboard enthusiasts. Share your sound.
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 © {new Date().getFullYear()} RateMyThock. All rights reserved.
               </p>
             </div>

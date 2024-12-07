@@ -2,54 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 267 84% 61%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 267 84% 61%;
-  --radius: 1rem;
-}
+@layer base {
+  :root {
+    /* Core colors inspired by vintage audio equipment and Braun design */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
 
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 267 84% 61%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 267 84% 61%;
+    /* Neutral tones for technical surfaces */
+    --card: 220 13% 95%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    /* Vintage orange as primary accent - inspired by LED indicators */
+    --primary: 15 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-rgb: 255, 89, 49; /* For LED glow effects */
+
+    /* Technical blue as secondary color */
+    --secondary: 200 30% 40%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-rgb: 51, 122, 153; /* For LED glow effects */
+
+    /* Muted grays for technical interfaces */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    /* Subtle accent for interface elements */
+    --accent: 240 5% 90%;
+    --accent-foreground: 240 6% 10%;
+
+    /* System feedback colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --destructive-rgb: 255, 59, 48; /* For LED glow effects */
+
+    /* Interface boundaries */
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 15 100% 55%;
+
+    /* Rounded corners - slightly less rounded for industrial feel */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 15 100% 55%;
+    --primary-foreground: 0 0% 98%;
+    --primary-rgb: 255, 89, 49;
+    --secondary: 200 30% 40%;
+    --secondary-foreground: 0 0% 98%;
+    --secondary-rgb: 51, 122, 153;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --destructive-rgb: 255, 59, 48;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 15 100% 55%;
+  }
 }
 
 @layer base {
   * {
-    @apply border-[#e5e7eb];
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
@@ -57,17 +82,124 @@
   }
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Typography System */
+.technical-label {
+  @apply font-mono text-xs uppercase tracking-wider;
 }
 
-/* Custom transitions */
-.transition-custom {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.measurement-text {
+  @apply font-mono tabular-nums;
 }
 
-/* Custom animations */
+/* Equipment Panel Styling */
+.equipment-panel {
+  @apply relative overflow-hidden rounded-lg border bg-equipment-gradient shadow-equipment transition-all duration-300;
+}
+
+.equipment-panel:hover {
+  @apply shadow-equipment-hover;
+}
+
+.equipment-panel::before {
+  content: "";
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    hsl(var(--card) / 0.1) 100%
+  );
+}
+
+.equipment-panel:hover::before {
+  @apply opacity-100;
+}
+
+/* Technical Grid System */
+.technical-grid {
+  @apply absolute inset-0 bg-technical-grid;
+  background-size: 24px 24px;
+  mask-image: linear-gradient(
+    to bottom,
+    hsl(var(--background)) 90%,
+    transparent 100%
+  );
+}
+
+/* Measurement Lines */
+.measurement-grid {
+  @apply relative;
+}
+
+.measurement-grid::before {
+  content: "";
+  @apply absolute left-0 top-0 h-full w-5;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    hsl(var(--border) / 0.3) 0px,
+    hsl(var(--border) / 0.3) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* Vintage Button */
+.vintage-button {
+  @apply relative overflow-hidden rounded-lg px-4 py-2 text-white shadow-equipment transition-all duration-300;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary) / 0.9) 100%
+  );
+}
+
+.vintage-button:hover {
+  @apply shadow-equipment-hover;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--primary) / 0.9) 0%,
+    hsl(var(--primary)) 100%
+  );
+  transform: translateY(-1px);
+}
+
+.vintage-button:active {
+  transform: translateY(1px);
+}
+
+/* Audio Controls */
+.audio-knob {
+  @apply relative w-16 h-16 rounded-full shadow-equipment transition-all duration-300;
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--card)) 0%,
+    hsl(var(--muted)) 100%
+  );
+}
+
+.audio-knob:hover {
+  @apply shadow-equipment-hover;
+}
+
+.audio-knob::after {
+  content: "";
+  @apply absolute top-2 left-1/2 w-0.5 h-4 bg-foreground/60;
+  transform: translateX(-50%);
+}
+
+/* Level Indicators */
+.level-indicator {
+  @apply w-1 h-4 rounded-sm transition-all duration-300;
+}
+
+.level-active {
+  @apply bg-primary shadow-[0_0_4px_rgba(var(--primary-rgb),0.6)];
+}
+
+.level-inactive {
+  @apply bg-border;
+}
+
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -99,43 +231,19 @@ html {
   animation: float 6s ease-in-out infinite;
 }
 
-/* Custom scrollbar */
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+  @apply bg-background;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 5px;
+  @apply bg-muted-foreground/30 rounded-full transition-colors duration-300;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
-
-/* Hero pattern */
-.hero-pattern {
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(0, 0, 0, 0.03) 1px,
-    transparent 0
-  );
-  background-size: 24px 24px;
-  opacity: 0;
-  animation: fadeIn 0.5s ease-out forwards;
-  animation-delay: 0.3s;
-}
-
-/* Card pattern */
-.card-pattern {
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(0, 0, 0, 0.015) 1px,
-    transparent 0
-  );
-  background-size: 16px 16px;
+  @apply bg-muted-foreground/50;
 }

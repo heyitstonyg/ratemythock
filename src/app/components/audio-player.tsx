@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { LedIndicator } from "./led-indicator";
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -9,12 +10,16 @@ interface AudioPlayerProps {
 export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState("00:00");
+  const [duration, setDuration] = useState("00:00");
+  const [levels, setLevels] = useState<number[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateProgress);
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
+      audioRef.current.addEventListener("loadedmetadata", updateDuration);
     }
     return () => {
       if (audioRef.current) {
@@ -22,15 +27,46 @@ export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
         audioRef.current.removeEventListener("ended", () =>
           setIsPlaying(false)
         );
+        audioRef.current.removeEventListener("loadedmetadata", updateDuration);
       }
     };
   }, []);
+
+  // Simulate VU meter levels
+  useEffect(() => {
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        const newLevels = Array.from({ length: 16 }, () =>
+          Math.floor(Math.random() * 8)
+        );
+        setLevels(newLevels);
+      }, 100);
+      return () => clearInterval(interval);
+    } else {
+      setLevels([]);
+    }
+  }, [isPlaying]);
+
+  const formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   const updateProgress = () => {
     if (audioRef.current) {
       const value =
         (audioRef.current.currentTime / audioRef.current.duration) * 100;
       setProgress(value);
+      setCurrentTime(formatTime(audioRef.current.currentTime));
+    }
+  };
+
+  const updateDuration = () => {
+    if (audioRef.current) {
+      setDuration(formatTime(audioRef.current.duration));
     }
   };
 
@@ -46,77 +82,96 @@ export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   };
 
   return (
-    <div className="relative">
+    <div className="equipment-panel p-4 space-y-4">
       <audio ref={audioRef} src={audioUrl} />
 
-      {/* Progress bar */}
-      <div className="absolute inset-x-0 -top-2 h-[1px]">
-        <div className="h-full bg-gray-100 rounded-full overflow-hidden">
+      {/* Transport Controls */}
+      <div className="flex items-center gap-4">
+        <button
+          onClick={togglePlayback}
+          className="vintage-button group flex items-center gap-2 min-w-[90px] justify-center"
+        >
+          <LedIndicator active={isPlaying} pulse={isPlaying} size="sm" />
+          <span className="technical-label text-[11px]">
+            {isPlaying ? "STOP" : "PLAY"}
+          </span>
+        </button>
+
+        {/* Time Display */}
+        <div className="equipment-panel px-3 py-1.5">
+          <div className="measurement-text text-xs">
+            {currentTime} <span className="text-muted-foreground">/</span>{" "}
+            {duration}
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="relative">
+        <div className="absolute -left-[2px] top-0 h-full w-[2px] flex flex-col justify-between py-1">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className={`
+                w-full h-[1px] bg-border/50
+                ${i === 0 || i === 2 ? "w-[4px]" : "w-[2px]"}
+              `}
+            />
+          ))}
+        </div>
+        <div className="h-2 bg-muted rounded-sm overflow-hidden">
           <div
-            className="h-full bg-purple-500/30 transition-all duration-100"
-            style={{ width: `${progress}%` }}
+            className="h-full bg-primary transition-all duration-100"
+            style={{
+              width: `${progress}%`,
+              backgroundImage:
+                "linear-gradient(90deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent)",
+              backgroundSize: "10px 10px",
+            }}
           />
         </div>
       </div>
 
-      {/* Play/Pause button */}
-      <button
-        onClick={togglePlayback}
-        className={`
-          relative w-full py-3 rounded-lg text-xs font-medium transition-all
-          ${
-            isPlaying
-              ? "bg-purple-50 text-purple-600 hover:bg-purple-100"
-              : "bg-purple-500/5 text-purple-600 hover:bg-purple-500/10"
-          }
-        `}
-      >
-        <span className="flex items-center justify-center gap-1.5">
-          {isPlaying ? (
-            <>
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <rect
-                  x="6"
-                  y="4"
-                  width="4"
-                  height="16"
-                  rx="1"
-                  fill="currentColor"
+      {/* VU Meter */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <LedIndicator active={isPlaying} color="secondary" size="sm" />
+            <span className="technical-label text-[11px] text-muted-foreground">
+              LEVEL
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1 h-1 rounded-full bg-primary/30" />
+            <span className="technical-label text-[11px] text-muted-foreground">
+              VU
+            </span>
+          </div>
+        </div>
+        <div className="grid grid-cols-16 gap-px h-4">
+          {(levels.length ? levels : Array(16).fill(0)).map((level, i) => (
+            <div key={i} className="flex flex-col justify-end space-y-px">
+              {[...Array(8)].map((_, j) => (
+                <div
+                  key={j}
+                  className={`
+                    w-full h-full transition-colors duration-150
+                    ${
+                      j < level
+                        ? j >= 6
+                          ? "bg-destructive"
+                          : j >= 4
+                          ? "bg-primary"
+                          : "bg-secondary"
+                        : "bg-muted"
+                    }
+                  `}
                 />
-                <rect
-                  x="14"
-                  y="4"
-                  width="4"
-                  height="16"
-                  rx="1"
-                  fill="currentColor"
-                />
-              </svg>
-              Stop
-            </>
-          ) : (
-            <>
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  fill="currentColor"
-                  d="M8 5.14v14.72a1 1 0 001.5.86l11-7.36a1 1 0 000-1.72l-11-7.36a1 1 0 00-1.5.86z"
-                />
-              </svg>
-              Play Sound
-            </>
-          )}
-        </span>
-      </button>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
